@@ -29,7 +29,13 @@ function Initialization {
             $credential = New-Object System.Management.Automation.PSCredential -ArgumentList $credentials.clientId, ($credentials.clientSecret | ConvertTo-SecureString -AsPlainText -Force)
 
             # Connect azure account
-            Connect-AzAccount -TenantId $credentials.tenantId -ServicePrincipal -Credential $credential -SubscriptionId $credentials.subscriptionId -WarningAction SilentlyContinue | Out-Null
+            if ($null -eq $credentials.subscriptionId) {
+                Connect-AzAccount -TenantId $credentials.tenantId -ServicePrincipal -Credential $credential -WarningAction SilentlyContinue | Out-Null
+            }
+            else {
+                Connect-AzAccount -TenantId $credentials.tenantId -ServicePrincipal -Credential $credential -SubscriptionId $credentials.subscriptionId -WarningAction SilentlyContinue | Out-Null
+            }
+            
 
             # Configure git
             Start-AzOpsNativeExecution {
